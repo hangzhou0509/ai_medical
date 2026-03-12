@@ -87,5 +87,36 @@ docker run -d --name medical_container --add-host="host.docker.internal:host-gat
 ```bash
 docker logs medical_container
 ```
+## 6.服务器sudo docker pull python:3.12-slim不行怎么办❓
+直接复制就能用的国内源拉取命令，不用改配置、不用重启docker
+**直接用国内源拉取python:3.12-slim**
+```bash
+sudo docker pull docker.1ms.run/library/python:3.12-slim
+```
+拉下来之后，照样可以用原名，不影响你后面写 Dockerfile：
+```bash
+sudo docker tag docker.1ms.run/library/python:3.12-slim python:3.12-slim
+```
+**如果你要在 Dockerfile 里直接用国内源**
+把这一行写进 Dockerfile：
+```bash
+FROM docker.1ms.run/library/python:3.12-slim
+```
+**备用国内源（上面不行就换这个）**
+```bash
+sudo docker pull mirror.baidubce.com/library/python:3.12-slim
+```
+--------------------------------------------------------------------------
+FROM = 从...开始 \
+docker.1ms.run = 国内Docker镜像加速地址 \
+library/python = 官方python镜像 \
+3.12-slim = Python3.12精简版 \
+整句意思：我要从国内源下载 Python 3.12 精简版，作为我容器的基础系统。 
 
+正常写法 FROM python:3.12-slim，但国内网络拉不动，会超时。 \
+FROM python:3.12-slim → FROM docker.io/library/python:3.12-slim(👈Docker会自动帮你补全) \
+**但用国内加速时，不会自动补全** 所以必须手动写全 
+```bash
+FROM docker.1ms.run/library/python:3.12-slim
+```
 
